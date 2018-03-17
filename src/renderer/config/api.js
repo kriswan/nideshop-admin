@@ -1,4 +1,4 @@
-const rootUrl = 'http://127.0.0.1:8360/admin/';
+const rootUrl = 'http://www.wanders.com.cn/admin/';
 
 const api = {
 
