@@ -1,14 +1,14 @@
 <template>
     <div class="left-box">
         <div class="logo">
-            <img src="static/images/logo.png"/>
+            <img src="static/images/meihua-side.png"/>
         </div>
         <el-menu class="sidebar" :unique-opened="true" :default-active="currentPagePath" @open="handleOpen"
                  :router="true" theme="dark" @close="handleClose">
-            <el-menu-item index="/dashboard">
+            <!-- <el-menu-item index="/dashboard">
                 <i class="fa fa-tachometer"></i>
                 <span>后台主页</span>
-            </el-menu-item>
+            </el-menu-item> -->
             <el-submenu index="goods">
                 <template slot="title">
                     <i class="fa fa-product-hunt"></i>
@@ -97,6 +97,9 @@
                 <!--</el-menu-item>-->
             <!--</el-submenu>-->
         </el-menu>
+        <div class="logo">
+            <img src="static/images/1001521901544_.pic.jpg"/>
+        </div>
     </div>
 </template>
 
@@ -122,6 +125,8 @@
             console.log(this.$route.path);
         }
     }
+
+    
 
 </script>
 <style>
@@ -157,13 +162,14 @@
 
     .left-box .logo {
         display: flex;
-        justify-content: center;
+        justify-content: left;
         align-items: center;
-        height: 120px;
+        height: 190px;
         box-shadow: 0 1px 1px rgba(0, 0, 0, .5);
     }
 
     .left-box .logo img {
-        height: 40px;
+        height: 190px;
+        width: 170px;
     }
 </style>

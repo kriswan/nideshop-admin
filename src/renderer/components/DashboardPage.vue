@@ -32,7 +32,7 @@
             <transition name="router-fade" mode="out-in">
                 <router-view></router-view>
             </transition>
-            <a class="footer" href="https://github.com/tumobi" target="_blank"> nideshop created by tumobi</a>
+            <a class="footer" href="https://kriswan.coding.me" target="_blank">powerd by kris wan</a>
         </div>
     </div>
 </template>
@@ -57,7 +57,7 @@
             handleClose(key, keyPath) {
                 console.log(key, keyPath);
             }
-        },
+        }
     }
 
 </script>

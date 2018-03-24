@@ -52,6 +52,7 @@
 
 <script>
   import api from '@/config/api';
+import { ELOOP } from 'constants';
   export default {
     data() {
       return {
@@ -61,7 +62,8 @@
         parentCategory: [
           {
             id: 0,
-            name: '顶级分类'
+            name: '顶级分类',
+            level: 'L1'
           }
         ],
         infoForm: {
@@ -72,6 +74,7 @@
           wap_banner_url: '',
           sort_order: 100,
           is_show: true,
+          level: ''
         },
         infoRules: {
           name: [
@@ -93,6 +96,11 @@
       onSubmitInfo() {
         this.$refs['infoForm'].validate((valid) => {
           if (valid) {
+            if(this.infoForm.parent_id == 0){
+              this.infoForm.level = 'L1'
+            }else{
+              this.infoForm.level = 'L2'
+            }
             this.axios.post('category/store', this.infoForm).then((response) => {
               if (response.data.errno === 0) {
                 this.$message({
@@ -117,7 +125,6 @@
           switch (res.data.name) {
             //分类图片
             case 'wap_banner_url':
-//              this.$set('infoForm.wap_banner_url', res.data.fileUrl);
               this.infoForm.wap_banner_url = res.data.fileUrl;
               break;
           }

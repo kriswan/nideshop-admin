@@ -1,11 +1,12 @@
 <template>
+
     <div class="login">
         <div class="login-box">
             <div class="logo">
-                <img src="static/images/logo.png"/>
+                <img src="static/images/meihua.png"/>
             </div>
             <div class="body">
-                <p class="tips">欢迎使用NideShop后台管理</p>
+                <p class="tips">欢迎使用【梅花药房】后台管理系统</p>
                 <el-form ref="form" :model="form" :rules="rules" label-position="top">
                     <el-form-item label="" prop="username">
                         <el-input v-model="form.username" placeholder="用户名"></el-input>
@@ -19,8 +20,7 @@
                         </el-button>
                     </el-form-item>
                 </el-form>
-
-                <p class="author">Created by <a href="https://github.com/tumobi" target="_blank">tumobi</a></p>
+                <p class="author">Powerd by <a href="https://kriswan.coding.me" target="_blank">kris wan</a></p>
             </div>
         </div>
     </div>
@@ -105,14 +105,15 @@
 
     .login-box .logo {
         height: 54px;
-        background: #324157;
+        background: #7892b8;
         display: flex;
         align-items: center;
         justify-content: center;
     }
 
     .login-box .logo img {
-        max-height: 30px;
+        max-width: 100px;
+        max-height: 50px;
     }
 
     .login-box .body {

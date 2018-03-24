@@ -37,7 +37,7 @@
 
 <style scoped>
     .right-box {
-        background: #324157;
+        background:#324157;
         height: 60px;
         display: block;
         position: fixed;
@@ -51,7 +51,7 @@
 
     .navbar {
         height: 60px;
-        background: #324157;
+        background:#324157;
         display: flex;
         width: 100%;
         justify-content: center;

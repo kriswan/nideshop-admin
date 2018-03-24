@@ -13,45 +13,57 @@
     <div class="content-main">
       <div class="form-table-box">
         <el-form ref="infoForm" :rules="infoRules" :model="infoForm" label-width="120px">
-          <el-form-item label="所属分类">
-            <el-cascader :options="options" placeholder="请选择分类" v-model="selectedOptions" @change="handleChange">
-            </el-cascader>
+          <el-form-item label="所属分类" >
+            <el-select v-model="infoForm.category_id" placeholder="请选择产品分类">
+              <el-option v-for="item in goodsCategory" :key="item.id" :label="item.name" :value="item.id"></el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="商品名称" prop="name">
             <el-input v-model="infoForm.name"></el-input>
           </el-form-item>
           <el-form-item label="所属品牌">
-            <el-select v-model="infoForm.region" placeholder="请选择商品">
-              <el-option label="长城" value="shanghai"></el-option>
-              <el-option label="宝马" value="beijing"></el-option>
+            <el-select v-model="infoForm.brand_id" placeholder="请选择所属品牌">
+              <el-option v-for="item in brandList" :key="item.id" :label="item.name" :value="item.id"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="商品简介" prop="simple_desc">
-            <el-input type="textarea" v-model="infoForm.simple_desc" :rows="3"></el-input>
+          <el-form-item label="商品简介" prop="goods_brief">
+            <el-input type="textarea" v-model="infoForm.goods_brief" :rows="3"></el-input>
             <div class="form-tip"></div>
           </el-form-item>
-          <el-form-item label="商品图片" prop="list_pic_url">
-            <el-upload class="image-uploader" name="brand_pic"
-                       action="https://www.wanders.com.cn/admin/upload/brandPic" :show-file-list="true"
+          <el-form-item label="详情图片">
+            <el-upload class="image-uploader" label="详情图" name="primary_pic_url"
+                       action="https://www.wanders.com.cn/admin/upload/goodsPrimaryPic" :show-file-list="true"
+                       :on-success="handleUploadImageSuccess" :headers="uploaderHeader">
+              <img v-if="infoForm.primary_pic_url" :src="infoForm.primary_pic_url" class="image-show">
+              <i v-else class="el-icon-plus image-uploader-icon"></i>
+            </el-upload>
+            <div class="form-tip">图片尺寸：750*420</div>
+          </el-form-item>
+          <el-form-item label="列表图片">
+            <el-upload class="image-uploader" label="列表图" name="list_pic_url"
+                       action="https://www.wanders.com.cn/admin/upload/goodsListPic" :show-file-list="true"
                        :on-success="handleUploadImageSuccess" :headers="uploaderHeader">
               <img v-if="infoForm.list_pic_url" :src="infoForm.list_pic_url" class="image-show">
               <i v-else class="el-icon-plus image-uploader-icon"></i>
             </el-upload>
             <div class="form-tip">图片尺寸：750*420</div>
           </el-form-item>
-          <el-form-item label="规格/库存" prop="simple_desc">
-
-          </el-form-item>
           <el-form-item label="推荐类型">
-            <el-checkbox-group v-model="infoForm.type">
-              <el-checkbox label="新品" name="type"></el-checkbox>
-              <el-checkbox label="人气" name="type"></el-checkbox>
-            </el-checkbox-group>
+            <el-checkbox label="新品" v-model="infoForm.is_new"></el-checkbox>
+            <el-checkbox label="人气" v-model="infoForm.is_hot"></el-checkbox>
           </el-form-item>
           <el-form-item label="上架">
-            <el-switch on-text="" off-text="" v-model="infoForm.status"></el-switch>
+                <el-switch v-model="infoForm.is_on_sale"></el-switch>
           </el-form-item>
-          <el-form-item label="排序">
+          <el-form-item label="零售价">
+            <el-input-number placeholder="请输入正整数" :min="1" :max="2000" v-model="infoForm.retail_price"></el-input-number>
+            <span>元</span>
+          </el-form-item>
+          <el-form-item label="库存数">
+            <el-input-number placeholder="请输入正整数" :min="1" :max="2000" v-model="infoForm.goods_number"></el-input-number>
+            <span>件</span>
+          </el-form-item>
+          <el-form-item label="商品排序">
             <el-input-number v-model="infoForm.sort_order" :min="1" :max="1000"></el-input-number>
           </el-form-item>
           <el-form-item>
@@ -72,29 +84,46 @@
         uploaderHeader: {
           'X-Nideshop-Token': localStorage.getItem('token') || '',
         },
+        goodsCategory: [],
+        brandList: [],
         infoForm: {
           id: 0,
           name: "",
-          list_pic_url: '',
-          simple_desc: '',
-          pic_url: '',
-          sort_order: 100,
-          is_show: true,
-          floor_price: 0,
-          app_list_pic_url: '',
-          is_new: false,
-          new_pic_url: "",
-          new_sort_order: 10
+          category_id: '',
+          brand_id: '',
+          goods_brief: '', //简介
+          sort_order: 10,  //排序
+          retail_price: 0,  //零售价
+          counter_price: 0,  //专柜价
+          list_pic_url: '', //列表图
+          primary_pic_url: '', //主图
+          goods_number: 0, //商品数量
+          sell_volume: 0, //销售量
+          is_on_sale: true, //是否上架
+          is_new: false, //是否新品
+          is_hot: false //是否热卖人气品
         },
         infoRules: {
           name: [
             { required: true, message: '请输入名称', trigger: 'blur' },
           ],
-          simple_desc: [
+          category_id: [
+            { required: true, message: '请选择产品分类', trigger: 'blur' },
+          ],
+          brand_id: [
+            { required: true, message: '请选择所属品牌', trigger: 'blur' },
+          ],
+          goods_brief: [
             { required: true, message: '请输入简介', trigger: 'blur' },
           ],
-          list_pic_url: [
+          pic_url: [
             { required: true, message: '请选择商品图片', trigger: 'blur' },
+          ],
+          inventory: [
+            { required: true, message: '库存数不能为空', trigger: 'blur' },
+          ],
+          retailprice: [
+            { required: true, message: '零售价不能为空', trigger: 'blur' },
           ],
         },
       }
@@ -106,7 +135,7 @@
       onSubmitInfo() {
         this.$refs['infoForm'].validate((valid) => {
           if (valid) {
-            this.axios.post('brand/store', this.infoForm).then((response) => {
+            this.axios.post('goods/store', this.infoForm).then((response) => {
               if (response.data.errno === 0) {
                 this.$message({
                   type: 'success',
@@ -129,11 +158,11 @@
         if (res.errno === 0) {
           switch (res.data.name) {
             //商品图片
-            case 'brand_pic':
-              this.$set('infoForm.list_pic_url', res.data.fileUrl);
+            case 'list_pic_url':
+              this.infoForm.list_pic_url = res.data.fileUrl;
               break;
-            case 'brand_new_pic':
-              this.$set('infoForm.new_pic_url', res.data.fileUrl);
+            case 'primary_pic_url':
+              this.infoForm.primary_pic_url = res.data.fileUrl;
               break;
           }
         }
@@ -145,24 +174,52 @@
 
         //加载商品详情
         let that = this
-        this.axios.get('brand/info', {
+        this.axios.get('goods/info', {
           params: {
             id: that.infoForm.id
           }
         }).then((response) => {
           let resInfo = response.data.data;
-          resInfo.is_new = resInfo.is_new ? true : false;
-          resInfo.is_show = resInfo.is_show ? true : false;
           that.infoForm = resInfo;
+          this.infoForm.is_new = resInfo.is_new === 1 ? true : false;
+          this.infoForm.is_hot = resInfo.is_hot === 1 ? true : false;
+          this.infoForm.is_on_sale = resInfo.is_on_sale === 1 ? true : false;
+        })
+      },
+
+      getCategoryList() {
+        this.axios.get('category', {
+          params: {
+            page: 1,
+            name: ''
+          }
+        }).then((response) => {
+          this.goodsCategory = response.data.data
+          // console.log('========goodsCategory=======');
+          // console.log(JSON.stringify(this.goodsCategory));
+        })
+      },
+
+      getBrandList() {
+        this.axios.get('brand', {
+          params: {
+            page: 1,
+            name: ''
+          }
+        }).then((response) => {
+          this.brandList = response.data.data.data;
+          // console.log('========brandlist=======');
+          // console.log(JSON.stringify(this.brandList));
         })
       }
 
     },
     components: {},
     mounted() {
+      this.getCategoryList();
+      this.getBrandList();
       this.infoForm.id = this.$route.query.id || 0;
       this.getInfo();
-      console.log(api)
     }
   }
 
